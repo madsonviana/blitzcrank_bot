@@ -1,16 +1,20 @@
-const bot = require('./config/bot')
+'use strict';
 
-const start = require('./modulos/start')
-const comandos = require('./modulos/comandos')
-const risadas = require('./modulos/risadas')
-const rankedsolo = require('./modulos/rankedsolo')
-const rankedflex = require('./modulos/rankedflex')
-const partida = require('./modulos/partida')
-const status = require('./modulos/status')
-const piada = require('./modulos/piada')
+import bot from './config/bot'
+
+import {
+    start,
+    comandos,
+    risadas,
+    rankedsolo,
+    rankedflex,
+    partida,
+    status,
+    piada
+} from './modulos'
 
 bot.onText( /\/start/, start)
-bot.onText( /\/comandos/, comandos)
+bot.onText( /\/(comandos|help)/, comandos)
 bot.onText( /lol|kkkk|huehue|h+a+h+a+|h+e+h+e+|h+i+h+i+|h+u+a+s+|j+e+j+e+|h+u+a+h+u+a|h+u+e+h+u+e/i, risadas)
 bot.onText( /\/status/, status)
 bot.onText( /\/piada/, piada)
