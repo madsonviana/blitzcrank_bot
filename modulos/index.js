@@ -1,3 +1,4 @@
+'use strict';
 export * from './comandos';
 export * from './invocador';
 export * from './partida';

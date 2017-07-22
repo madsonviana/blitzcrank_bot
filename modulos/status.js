@@ -1,23 +1,26 @@
-const http = require( `axios` )
+'use strict';
 
-const bot = require('../config/bot')
+import bot from '../config/bot';
+import RiotUtil from '../util/riot_util';
 
-const key = `?api_key=RGAPI-a1503db2-d279-47cb-9f38-e73da6d734fc`
-const url_status = `https://br1.api.riotgames.com/lol/status/v3/shard-data`
+const SERVICOS = {
+  'Game':'Jogo',
+  'Store':'Loja',
+  'Website':'Site',
+  'Client':'Cliente',
+  'Update':'Atualização'
+};
 
-const sendStatus = ( msg, match ) =>
-http.get(`${url_status}${key}`)
-  .then((response) =>
-    bot.sendMessage( msg.chat.id, "Verificando sistema... \n"
-                    + "\n"
-                    + "Jogo: " + response.data.services[0].status + "\n"
-                    + "Loja: " + response.data.services[1].status + "\n"
-                    + "Site: " + response.data.services[2].status + "\n"
-                    + "Client: " + response.data.services[3].status + "\n"
-                    + "Update: " + response.data.services[4].status + "\n")
-      .then( console.log(match) )
-      .catch()
-    )
-  .catch()
-
-  module.exports = sendStatus
+export function status( msg, match ) {
+  RiotUtil.status()
+    .then((response) => {
+      let msgResposta = "Verificando sistema... \n\n";
+      for(let servico of response.data.services) {
+        msgResposta += `${SERVICOS[servico.name]}: ${servico.status}\n`;
+      }
+      return bot.sendMessage( msg.chat.id, msgResposta);
+    }).catch((err) => {
+      bot.sendMessage( msg.chat.id, 'Ocorreu um erro ao obter o status.');
+      console.log(err);
+    });
+};

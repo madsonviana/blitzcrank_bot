@@ -4,7 +4,7 @@
   "description": "BOT para League of Legends",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "babel-node index.js",
     "test": "jest"
   },
   "author": "",
@@ -15,6 +15,8 @@
     "pm2": "^2.4.6"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
     "jest": "^20.0.4"
   }
 }

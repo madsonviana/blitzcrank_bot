@@ -1,26 +1,20 @@
-const http = require( `axios` )
+'use strict';
+import bot from '../config/bot';
+import RiotUtil from '../util/riot_util';
 
-const bot = require('../config/bot')
-
-const key = `?api_key=RGAPI-a1503db2-d279-47cb-9f38-e73da6d734fc`
-const url_id = `https://br1.api.riotgames.com/lol/summoner/v3/summoners/by-name/`
-const url_ranked = `https://br1.api.riotgames.com/lol/league/v3/positions/by-summoner/`
-
-const getDados = (response) =>
-http.get(`${url_ranked}${response.data.id}${key}`)
-
-const sendRankedSolo = ( msg, match ) =>
-http.get(`${url_id}${match[ 1 ]}${key}`)
-  .then( getDados )
-  .then((response) =>
-    bot.sendMessage( msg.chat.id, "O jogador " + response.data[0].playerOrTeamName + " esta no elo " +
-    response.data[0].tier + " " + response.data[0].rank + " com " + response.data[0].leaguePoints +
-    " pontos e " + response.data[0].wins + " vitórias.")
-      .then( console.log(match) )
-      .catch()
-    )
-    .catch(
-      bot.sendMessage( msg.chat.id, "Esse invocador não está classificado.")
-    )
-
-  module.exports = sendRankedSolo
+export function rankedsolo( msg, match ) {
+  let name = match[1];
+  RiotUtil.rankByName(name)
+    .then((response) => {
+      if(response.data.lenght > 0) {
+        let rank = response.data[0];
+        return bot.sendMessage( msg.chat.id, `O jogador ${rank.playerOrTeamName} esta no elo ${rank.tier} ${rank.rank} com ${rank.leaguePoints} pontos e ${rank.wins} vitórias.`)
+      } else {
+        return bot.sendMessage( msg.chat.id, `O jogador ${name} não está classificado.`);
+      }
+    })
+    .catch((err) => {
+      bot.sendMessage( msg.chat.id, `Ocorreu um erro ao obter o rank do invocador ${name}`)
+      console.log(err);
+    });
+}
